@@ -28,6 +28,7 @@ You will need to get your API key, and configure an application key.  Go to http
 ## Usage
 
 ```
+Lita graph metric:"system.load.1{*}"
 Lita graph metric:"system.load.1{*},system.load.5{*}"
 ```
 

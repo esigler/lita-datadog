@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Lita::Handlers::Datadog, lita_handler: true do
+  it { routes_command('graph metric:"system.load.1{*}"').to(:simple_metric) }
   it { routes_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:simple_metric) }
 
   describe '.default_config' do
