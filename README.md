@@ -1,5 +1,9 @@
 # lita-datadog
 
+[![Build Status](https://travis-ci.org/esigler/lita-datadog.png?branch=master)](https://travis-ci.org/esigler/lita-datadog)
+[![Code Climate](https://codeclimate.com/github/esigler/lita-datadog.png)](https://codeclimate.com/github/esigler/lita-datadog)
+[![Coverage Status](https://coveralls.io/repos/esigler/lita-datadog/badge.png)](https://coveralls.io/r/esigler/lita-datadog)
+
 Interact with Datadog (https://www.datadoghq.com/).
 
 ## Installation
