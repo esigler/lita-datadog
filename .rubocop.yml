@@ -1,0 +1,9 @@
+AllCops:
+  Excludes:
+    - lita-datadog.gemspec
+
+LineLength:
+  Max: 99
+
+Documentation:
+  Enabled: false
