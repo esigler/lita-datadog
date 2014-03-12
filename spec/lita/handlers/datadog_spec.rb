@@ -1,8 +1,13 @@
 require 'spec_helper'
 
 describe Lita::Handlers::Datadog, lita_handler: true do
-  it { routes_command('graph metric:"system.load.1{*}"').to(:simple_metric) }
-  it { routes_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:simple_metric) }
+  EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'
+  EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'
+
+  it { routes_command('graph metric:"system.load.1{*}"').to(:graph) }
+  it { routes_command('graph metric:"system.load.1{host:hostname01}"').to(:graph) }
+  it { routes_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph) }
+  it { routes_command('graph metric:"system.load.1{*}" event:"sources:something"').to(:graph) }
 
   describe '.default_config' do
     it 'sets the api_key to nil' do
@@ -13,25 +18,51 @@ describe Lita::Handlers::Datadog, lita_handler: true do
       expect(Lita.config.handlers.datadog.application_key).to be_nil
     end
 
-    it 'sets the default_timerange to 3600' do
-      expect(Lita.config.handlers.datadog.default_timerange).to eq(3600)
+    it 'sets the timerange to 3600' do
+      expect(Lita.config.handlers.datadog.timerange).to eq(3600)
+    end
+
+    it 'sets the waittime to 1' do
+      expect(Lita.config.handlers.datadog.waittime).to eq(1)
     end
   end
 
-  describe '#simple_metric' do
+  describe '#graph' do
     it 'with valid metric returns an image url' do
-      response = { 'snapshot_url' => 'http://www.example.com/path/that/ends/in.png' }
+      response = { 'snapshot_url' => EXAMPLE_IMAGE_URL }
       allow_any_instance_of(Lita::Handlers::Datadog).to \
         receive(:graph_snapshot).with(any_args).and_return([200, response])
       send_command('graph metric:"system.load.1{*}"')
-      expect(replies.last).to eq('http://www.example.com/path/that/ends/in.png')
+      expect(replies.last).to eq(EXAMPLE_IMAGE_URL)
     end
 
     it 'with invalid metric returns an error' do
       allow_any_instance_of(Lita::Handlers::Datadog).to \
         receive(:graph_snapshot).with(any_args).and_return([500, nil])
       send_command('graph metric:"omg.wtf.bbq{*}"')
-      expect(replies.last).to eq('Error requesting Datadog graph')
+      expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
+    end
+
+    it 'with valid metric and event returns an image url' do
+      response = { 'snapshot_url' => EXAMPLE_IMAGE_URL }
+      allow_any_instance_of(Lita::Handlers::Datadog).to \
+        receive(:graph_snapshot).with(any_args).and_return([200, response])
+      send_command('graph metric:"system.load.1{*}"')
+      expect(replies.last).to eq(EXAMPLE_IMAGE_URL)
+    end
+
+    it 'with an invalid metric returns an error' do
+      allow_any_instance_of(Lita::Handlers::Datadog).to \
+        receive(:graph_snapshot).with(any_args).and_return([500, nil])
+      send_command('graph metric:"omg.wtf.bbq{*}" event:"sources:sourcename"')
+      expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
+    end
+
+    it 'with an invalid event returns an error' do
+      allow_any_instance_of(Lita::Handlers::Datadog).to \
+        receive(:graph_snapshot).with(any_args).and_return([500, nil])
+      send_command('graph metric:"system.load.1{*}" event:"omg:wtf"')
+      expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
     end
   end
 end

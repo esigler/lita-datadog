@@ -25,7 +25,8 @@ You will need to get your API key, and configure an application key.  Go to http
 
 ### Optional attributes
 
-* `default_timerange` (Integer) - How long in seconds a default time range will be for graphs.  Default: `3600`
+* `timerange` (Integer) - How long in seconds a time range will be for graphs. Default: `3600`
+* `waittime` (Integer) - How long to wait after getting a URL from Datadog to display it (sometimes the graph isn't ready yet). Default: `1`
 
 ### Example
 
@@ -33,7 +34,9 @@ You will need to get your API key, and configure an application key.  Go to http
 
 ```
 Lita graph metric:"system.load.1{*}"
+Lita graph metric:"system.load.1{host:hostname01}"
 Lita graph metric:"system.load.1{*},system.load.5{*}"
+Lita graph metric:"system.load.1{*}" event:"sources:sourcename"
 ```
 
 ## License
