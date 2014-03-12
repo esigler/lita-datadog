@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-datadog"
-  spec.version       = "0.1.0"
+  spec.version       = "0.2.0"
   spec.authors       = ["Eric Sigler"]
   spec.email         = ["me@esigler.com"]
   spec.description   = %q{A Lita handler for interacting with Datadog}
@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "lita", ">= 3.0"
   spec.add_runtime_dependency "dogapi"
+  spec.add_runtime_dependency "chronic"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"

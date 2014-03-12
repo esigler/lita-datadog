@@ -37,7 +37,21 @@ Lita graph metric:"system.load.1{*}"
 Lita graph metric:"system.load.1{host:hostname01}"
 Lita graph metric:"system.load.1{*},system.load.5{*}"
 Lita graph metric:"system.load.1{*}" event:"sources:sourcename"
+Lita graph metric:"system.load.1{*}" start:"2 hours ago"
+Lita graph metric:"system.load.1{*}" from:"2 hours ago" to:"30 minutes ago"
 ```
+
+Graph takes the following arguments:
+```
+metric:"<metric>"
+event:"<event>"
+start:"<time description>"
+end:"<time description>"
+from:"<time description>"
+to:"<time description>"
+```
+
+Time descriptions are parsed by https://github.com/mojombo/chronic
 
 ## License
 

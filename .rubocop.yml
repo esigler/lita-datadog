@@ -3,7 +3,7 @@ AllCops:
     - lita-datadog.gemspec
 
 LineLength:
-  Max: 99
+  Max: 120
 
 MethodLength:
   Max: 20

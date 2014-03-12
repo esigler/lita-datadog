@@ -1,22 +1,15 @@
 require 'dogapi'
+require 'Chronic'
 
 module Lita
   module Handlers
     class Datadog < Handler
       route(
-        /^graph\smetric:"(\S+)"$/,
+        /^graph\s(.*)$/,
         :graph,
         command: true,
         help: { 'graph metric:"simple.metric.1{*},simple.metric.5{*}"' =>
           'Graph those metrics, for the default time range' }
-      )
-
-      route(
-        /^graph\smetric:"(\S+)"\sevent:"(\S+)"$/,
-        :graph,
-        command: true,
-        help: { 'graph metric:"simple.metric.1{*}" event:"sources:somename"' =>
-          'Graph those metrics with specified events, for the default time range' }
       )
 
       def self.default_config(config)
@@ -27,12 +20,10 @@ module Lita
       end
 
       def graph(response)
-        metric = response.matches[0][0]
-        event  = (response.matches[0].count >= 2) ? response.matches[0][1] : ''
-        end_ts = Time.now.to_i
-        start_ts = end_ts - Lita.config.handlers.datadog.timerange
-        _return_code, snapshot = graph_snapshot(metric, start_ts, end_ts, event)
-        if snapshot
+        args = parse_arguments(response.matches[0][0])
+        return_code, snapshot = graph_snapshot(args[:metric], args[:start],
+                                               args[:end], args[:event])
+        if return_code.to_s == '200'
           sleep Lita.config.handlers.datadog.waittime
           response.reply(snapshot['snapshot_url'])
         else
@@ -50,6 +41,21 @@ module Lita
                                     Lita.config.handlers.datadog.application_key)
 
         return client.graph_snapshot(metric_query, start_ts, end_ts, event_query) if client
+      end
+
+      def parse_arguments(arg_string)
+        end_m    = /(to|end):"(.+?)"/.match(arg_string)
+        end_ts   = end_m ? Chronic.parse(end_m[2]).to_i : Time.now.to_i
+        start_m  = /(from|start):"(.+?)"/.match(arg_string)
+        start_ts = start_m ? Chronic.parse(start_m[2]).to_i : end_ts - Lita.config.handlers.datadog.timerange
+        metric_m = /metric:"(.+?)"/.match(arg_string)
+        metric   = metric_m ? metric_m[1] : 'system.load.1{*}'
+        event_m  = /event:"(.+?)"/.match(arg_string)
+        event    = event_m ? event_m[1] : ''
+        { metric: metric,
+          start: start_ts,
+          end: end_ts,
+          event: event }
       end
     end
 
