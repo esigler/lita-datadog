@@ -1,5 +1,5 @@
 require 'dogapi'
-require 'Chronic'
+require 'chronic'
 
 module Lita
   module Handlers
