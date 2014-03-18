@@ -16,7 +16,7 @@ module Lita
         config.api_key = nil
         config.application_key = nil
         config.timerange = 3600
-        config.waittime = 1
+        config.waittime = 0
       end
 
       def graph(response)

@@ -22,8 +22,8 @@ describe Lita::Handlers::Datadog, lita_handler: true do
       expect(Lita.config.handlers.datadog.timerange).to eq(3600)
     end
 
-    it 'sets the waittime to 1' do
-      expect(Lita.config.handlers.datadog.waittime).to eq(1)
+    it 'sets the waittime to 0' do
+      expect(Lita.config.handlers.datadog.waittime).to eq(0)
     end
   end
 
