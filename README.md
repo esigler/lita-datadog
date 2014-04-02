@@ -37,6 +37,7 @@ end
 
 ## Usage
 
+### Graphs
 
 Basic graph of the load on all of your systems:
 
@@ -73,6 +74,13 @@ start:"<time description>"
 end:"<time description>"
 from:"<time description>"
 to:"<time description>"
+```
+
+### Searching metrics:
+
+A basic search to see all of the metrics for a host:
+```
+Lita datadog search:"host:hostname01"
 ```
 
 Time descriptions are parsed by https://github.com/mojombo/chronic

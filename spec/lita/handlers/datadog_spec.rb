@@ -8,6 +8,7 @@ describe Lita::Handlers::Datadog, lita_handler: true do
   it { routes_command('graph metric:"system.load.1{host:hostname01}"').to(:graph) }
   it { routes_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph) }
   it { routes_command('graph metric:"system.load.1{*}" event:"sources:something"').to(:graph) }
+  it { routes_command('datadog search:"host:hostname01"').to(:graph) }
 
   describe '.default_config' do
     it 'sets the api_key to nil' do
