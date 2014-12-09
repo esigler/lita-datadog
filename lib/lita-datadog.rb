@@ -5,3 +5,6 @@ Lita.load_locales Dir[File.expand_path(
 )]
 
 require 'lita/handlers/datadog'
+
+require 'dogapi'
+require 'chronic'

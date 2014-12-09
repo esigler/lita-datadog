@@ -2,3 +2,9 @@ en:
   lita:
     handlers:
       datadog:
+        errors:
+          request: Error requesting Datadog graph
+        help:
+          graph:
+            syntax: 'graph metric:"simple.metric.1{*},simple.metric.5{*}'
+            desc: 'Graph those metrics, for the default time range'

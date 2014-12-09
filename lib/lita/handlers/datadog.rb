@@ -1,6 +1,3 @@
-require 'dogapi'
-require 'chronic'
-
 module Lita
   module Handlers
     class Datadog < Handler
@@ -13,8 +10,7 @@ module Lita
         /^graph\s(.*)$/,
         :graph,
         command: true,
-        help: { 'graph metric:"simple.metric.1{*},simple.metric.5{*}"' =>
-          'Graph those metrics, for the default time range' }
+        help: { t('help.graph.syntax') => t('help.graph.desc') }
       )
 
       def graph(response)
@@ -32,7 +28,7 @@ module Lita
           sleep config.waittime
           return snapshot['snapshot_url']
         else
-          'Error requesting Datadog graph'
+          t('errors.request')
         end
       end
 
