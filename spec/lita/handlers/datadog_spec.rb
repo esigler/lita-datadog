@@ -4,6 +4,20 @@ describe Lita::Handlers::Datadog, lita_handler: true do
   EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'
   EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'
 
+  let(:success) do
+    client = double
+    allow(client).to receive(:graph_snapshot) {
+      [200, { 'snapshot_url' => EXAMPLE_IMAGE_URL }]
+    }
+    client
+  end
+
+  let(:error) do
+    client = double
+    allow(client).to receive(:graph_snapshot) { [500, {}] }
+    client
+  end
+
   it do
     is_expected.to route_command(
       'graph metric:"system.load.1{*}"')
@@ -39,38 +53,31 @@ describe Lita::Handlers::Datadog, lita_handler: true do
 
   describe '#graph' do
     it 'with valid metric returns an image url' do
-      response = { 'snapshot_url' => EXAMPLE_IMAGE_URL }
-      allow_any_instance_of(Lita::Handlers::Datadog).to \
-        receive(:graph_snapshot).with(any_args).and_return([200, response])
+      expect(Dogapi::Client).to receive(:new) { success }
       send_command('graph metric:"system.load.1{*}"')
       expect(replies.last).to eq(EXAMPLE_IMAGE_URL)
     end
 
     it 'with invalid metric returns an error' do
-      allow_any_instance_of(Lita::Handlers::Datadog).to \
-        receive(:graph_snapshot).with(any_args).and_return([500, nil])
+      expect(Dogapi::Client).to receive(:new) { error }
       send_command('graph metric:"omg.wtf.bbq{*}"')
       expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
     end
 
     it 'with valid metric and event returns an image url' do
-      response = { 'snapshot_url' => EXAMPLE_IMAGE_URL }
-      allow_any_instance_of(Lita::Handlers::Datadog).to \
-        receive(:graph_snapshot).with(any_args).and_return([200, response])
+      expect(Dogapi::Client).to receive(:new) { success }
       send_command('graph metric:"system.load.1{*}"')
       expect(replies.last).to eq(EXAMPLE_IMAGE_URL)
     end
 
     it 'with an invalid metric returns an error' do
-      allow_any_instance_of(Lita::Handlers::Datadog).to \
-        receive(:graph_snapshot).with(any_args).and_return([500, nil])
+      expect(Dogapi::Client).to receive(:new) { error }
       send_command('graph metric:"omg.wtf.bbq{*}" event:"sources:sourcename"')
       expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
     end
 
     it 'with an invalid event returns an error' do
-      allow_any_instance_of(Lita::Handlers::Datadog).to \
-        receive(:graph_snapshot).with(any_args).and_return([500, nil])
+      expect(Dogapi::Client).to receive(:new) { error }
       send_command('graph metric:"system.load.1{*}" event:"omg:wtf"')
       expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
     end

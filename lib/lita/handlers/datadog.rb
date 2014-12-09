@@ -21,8 +21,10 @@ module Lita
       private
 
       def get_response(args)
-        return_code, snapshot = graph_snapshot(args[:metric], args[:start],
-                                               args[:end], args[:event])
+        return_code, snapshot = get_graph_url(args[:metric],
+                                              args[:start],
+                                              args[:end],
+                                              args[:event])
 
         if return_code.to_s == '200'
           sleep config.waittime
