@@ -4,11 +4,13 @@ describe Lita::Handlers::Datadog, lita_handler: true do
   EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'
   EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'
 
-  it { routes_command('graph metric:"system.load.1{*}"').to(:graph) }
-  it { routes_command('graph metric:"system.load.1{host:hostname01}"').to(:graph) }
-  it { routes_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph) }
-  it { routes_command('graph metric:"system.load.1{*}" event:"sources:something"').to(:graph) }
-  it { routes_command('datadog search:"host:hostname01"').to(:graph) }
+  it do
+    is_expected.to route_command('graph metric:"system.load.1{*}"').to(:graph)
+    is_expected.to route_command('graph metric:"system.load.1{host:hostname01}"').to(:graph)
+    is_expected.to route_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph)
+    is_expected.to route_command('graph metric:"system.load.1{*}" event:"sources:something"').to(:graph)
+    # is_expected.to route_command('datadog search:"host:hostname01"').to(:graph)
+  end
 
   describe '.default_config' do
     it 'sets the api_key to nil' do
