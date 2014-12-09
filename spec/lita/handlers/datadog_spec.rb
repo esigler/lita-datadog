@@ -5,12 +5,18 @@ describe Lita::Handlers::Datadog, lita_handler: true do
   EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'
 
   it do
-    is_expected.to route_command('graph metric:"system.load.1{*}"').to(:graph)
-    is_expected.to route_command('graph metric:"system.load.1{host:hostname01}"').to(:graph)
-    is_expected.to route_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph)
-    is_expected.to route_command('graph metric:"system.load.1{*}" event:"sources:something"')
+    is_expected.to route_command(
+      'graph metric:"system.load.1{*}"')
       .to(:graph)
-    # is_expected.to route_command('datadog search:"host:hostname01"').to(:graph)
+    is_expected.to route_command(
+      'graph metric:"system.load.1{host:hostname01}"')
+      .to(:graph)
+    is_expected.to route_command(
+      'graph metric:"system.load.1{*},system.load.5{*}"')
+      .to(:graph)
+    is_expected.to route_command(
+      'graph metric:"system.load.1{*}" event:"sources:something"')
+      .to(:graph)
   end
 
   describe '.default_config' do

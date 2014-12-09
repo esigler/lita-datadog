@@ -79,13 +79,6 @@ from:"<time description>"
 to:"<time description>"
 ```
 
-### Searching metrics:
-
-A basic search to see all of the metrics for a host:
-```
-Lita datadog search:"host:hostname01"
-```
-
 Time descriptions are parsed by https://github.com/mojombo/chronic
 
 ## License

@@ -5,6 +5,3 @@ Documentation:
 FileName:
   Exclude:
     - lib/lita-datadog.rb
-
-LineLength:
-  Max: 95
