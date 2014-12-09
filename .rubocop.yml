@@ -1,12 +1,10 @@
-AllCops:
-  Excludes:
-    - lita-datadog.gemspec
+Documentation:
+  Exclude:
+    - lib/lita/handlers/datadog.rb
+
+FileName:
+  Exclude:
+    - lib/lita-datadog.rb
 
 LineLength:
-  Max: 120
-
-MethodLength:
-  Max: 20
-
-Documentation:
-  Enabled: false
+  Max: 95

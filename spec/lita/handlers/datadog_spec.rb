@@ -8,7 +8,8 @@ describe Lita::Handlers::Datadog, lita_handler: true do
     is_expected.to route_command('graph metric:"system.load.1{*}"').to(:graph)
     is_expected.to route_command('graph metric:"system.load.1{host:hostname01}"').to(:graph)
     is_expected.to route_command('graph metric:"system.load.1{*},system.load.5{*}"').to(:graph)
-    is_expected.to route_command('graph metric:"system.load.1{*}" event:"sources:something"').to(:graph)
+    is_expected.to route_command('graph metric:"system.load.1{*}" event:"sources:something"')
+      .to(:graph)
     # is_expected.to route_command('datadog search:"host:hostname01"').to(:graph)
   end
 

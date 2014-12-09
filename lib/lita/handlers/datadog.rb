@@ -52,10 +52,7 @@ module Lita
         metric   = metric_m ? metric_m[1] : 'system.load.1{*}'
         event_m  = /event:"(.+?)"/.match(arg_string)
         event    = event_m ? event_m[1] : ''
-        { metric: metric,
-          start: start_ts,
-          end: end_ts,
-          event: event }
+        { metric: metric, start: start_ts, end: end_ts, event: event }
       end
     end
 
