@@ -23,7 +23,7 @@ gem "lita-datadog"
 
 You will need a DataDog API key, and an application key.  Go to https://app.datadoghq.com/account/settings#api for both.
 
-Add the following some
+Add the following variable to your Lita config file:
 ```
 Lita.configure do |config|
 ...
