@@ -4,6 +4,11 @@ require 'chronic'
 module Lita
   module Handlers
     class Datadog < Handler
+      config :api_key, required: true
+      config :application_key, required: true
+      config :timerange, default: 3600
+      config :waittime, default: 0
+
       route(
         /^graph\s(.*)$/,
         :graph,
@@ -12,47 +17,59 @@ module Lita
           'Graph those metrics, for the default time range' }
       )
 
-      def self.default_config(config)
-        config.api_key = nil
-        config.application_key = nil
-        config.timerange = 3600
-        config.waittime = 0
-      end
-
       def graph(response)
         args = parse_arguments(response.matches[0][0])
-        return_code, snapshot = graph_snapshot(args[:metric], args[:start],
-                                               args[:end], args[:event])
-        if return_code.to_s == '200'
-          sleep Lita.config.handlers.datadog.waittime
-          response.reply(snapshot['snapshot_url'])
-        else
-          response.reply('Error requesting Datadog graph')
-        end
+        response.reply(get_response(args))
       end
 
       private
 
-      def graph_snapshot(metric_query, start_ts, end_ts, event_query)
-        return nil if Lita.config.handlers.datadog.api_key.nil? ||
-                      Lita.config.handlers.datadog.application_key.nil?
+      def get_response(args)
+        return_code, snapshot = graph_snapshot(args[:metric], args[:start],
+                                               args[:end], args[:event])
 
-        client = Dogapi::Client.new(Lita.config.handlers.datadog.api_key,
-                                    Lita.config.handlers.datadog.application_key)
+        if return_code.to_s == '200'
+          sleep config.waittime
+          return snapshot['snapshot_url']
+        else
+          'Error requesting Datadog graph'
+        end
+      end
 
-        return client.graph_snapshot(metric_query, start_ts, end_ts, event_query) if client
+      def get_graph_url(metric_query, start_ts, end_ts, event_query)
+        client = Dogapi::Client.new(config.api_key, config.application_key)
+
+        return nil unless client
+
+        client.graph_snapshot(metric_query, start_ts, end_ts, event_query)
       end
 
       def parse_arguments(arg_string)
-        end_m    = /(to|end):"(.+?)"/.match(arg_string)
-        end_ts   = end_m ? Chronic.parse(end_m[2]).to_i : Time.now.to_i
-        start_m  = /(from|start):"(.+?)"/.match(arg_string)
-        start_ts = start_m ? Chronic.parse(start_m[2]).to_i : end_ts - Lita.config.handlers.datadog.timerange
-        metric_m = /metric:"(.+?)"/.match(arg_string)
-        metric   = metric_m ? metric_m[1] : 'system.load.1{*}'
-        event_m  = /event:"(.+?)"/.match(arg_string)
-        event    = event_m ? event_m[1] : ''
+        end_ts   = parse_end(arg_string)
+        start_ts = parse_start(arg_string, end_ts)
+        metric   = parse_metric(arg_string)
+        event    = parse_event(arg_string)
         { metric: metric, start: start_ts, end: end_ts, event: event }
+      end
+
+      def parse_end(string)
+        found = /(to|end):"(.+?)"/.match(string)
+        found ? Chronic.parse(found[2]).to_i : Time.now.to_i
+      end
+
+      def parse_start(string, end_ts)
+        found = /(from|start):"(.+?)"/.match(string)
+        found ? Chronic.parse(found[2]).to_i : end_ts - config.timerange
+      end
+
+      def parse_metric(string)
+        found = /metric:"(.+?)"/.match(string)
+        found ? found[1] : 'system.load.1{*}'
+      end
+
+      def parse_event(string)
+        found = /event:"(.+?)"/.match(string)
+        found ? found[1] : ''
       end
     end
 
