@@ -1,10 +1,13 @@
 # lita-datadog
 
-[![Build Status](https://travis-ci.org/esigler/lita-datadog.png?branch=master)](https://travis-ci.org/esigler/lita-datadog)
-[![Code Climate](https://codeclimate.com/github/esigler/lita-datadog.png)](https://codeclimate.com/github/esigler/lita-datadog)
-[![Coverage Status](https://coveralls.io/repos/esigler/lita-datadog/badge.png)](https://coveralls.io/r/esigler/lita-datadog)
+[![Build Status](https://img.shields.io/travis/esigler/lita-datadog/master.svg)](https://travis-ci.org/esigler/lita-datadog)
+[![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://tldrlegal.com/license/mit-license)
+[![RubyGems :: RMuh Gem Version](http://img.shields.io/gem/v/lita-datadog.svg)](https://rubygems.org/gems/lita-datadog)
+[![Coveralls Coverage](https://img.shields.io/coveralls/esigler/lita-datadog/master.svg)](https://coveralls.io/r/esigler/lita-datadog)
+[![Code Climate](https://img.shields.io/codeclimate/github/esigler/lita-datadog.svg)](https://codeclimate.com/github/esigler/lita-datadog)
+[![Gemnasium](https://img.shields.io/gemnasium/esigler/lita-datadog.svg)](https://gemnasium.com/esigler/lita-datadog)
 
-Interact with Datadog (https://www.datadoghq.com/).
+A [Datadog](http://datadoghq.com) plugin for [Lita](https://github.com/jimmycuadra/lita).
 
 ## Installation
 
