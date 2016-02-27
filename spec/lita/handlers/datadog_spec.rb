@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Lita::Handlers::Datadog, lita_handler: true do
-  EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'
-  EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'
+  EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'.freeze
+  EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'.freeze
 
   let(:success) do
     client = double
