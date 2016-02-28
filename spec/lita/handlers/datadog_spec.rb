@@ -14,7 +14,7 @@ describe Lita::Handlers::Datadog, lita_handler: true do
 
   let(:error) do
     client = double
-    allow(client).to receive(:graph_snapshot) { [500, {}] }
+    allow(client).to receive(:graph_snapshot) { [500, { 'errors' => ['foo'] }] }
     client
   end
 
