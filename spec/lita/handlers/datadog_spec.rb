@@ -33,24 +33,6 @@ describe Lita::Handlers::Datadog, lita_handler: true do
       .to(:graph)
   end
 
-  describe '.default_config' do
-    it 'sets the api_key to nil' do
-      expect(Lita.config.handlers.datadog.api_key).to be_nil
-    end
-
-    it 'sets the application_key to nil' do
-      expect(Lita.config.handlers.datadog.application_key).to be_nil
-    end
-
-    it 'sets the timerange to 3600' do
-      expect(Lita.config.handlers.datadog.timerange).to eq(3600)
-    end
-
-    it 'sets the waittime to 0' do
-      expect(Lita.config.handlers.datadog.waittime).to eq(0)
-    end
-  end
-
   describe '#graph' do
     it 'with valid metric returns an image url' do
       expect(Dogapi::Client).to receive(:new) { success }
