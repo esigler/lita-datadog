@@ -2,6 +2,34 @@ module Lita
   module Helpers
     # Helpers to go alongside fetching & parsing things
     module Utilities
+      def mute_host(hostname, args)
+        client = Dogapi::Client.new(config.api_key, config.application_key)
+        return false unless client
+
+        return_code, contents = client.mute_host(hostname, args)
+
+        if return_code.to_s != '200'
+          log.warning("URL (#{return_code}): #{contents['errors'].join('\n')}")
+          return false
+        end
+
+        true
+      end
+
+      def unmute_host(hostname)
+        client = Dogapi::Client.new(config.api_key, config.application_key)
+        return false unless client
+
+        return_code, contents = client.unmute_host(hostname)
+
+        if return_code.to_s != '200'
+          log.warning("URL (#{return_code}): #{contents['errors'].join('\n')}")
+          return false
+        end
+
+        true
+      end
+
       def get_graph_url(metric_query, start_ts, end_ts, event_query)
         client = Dogapi::Client.new(config.api_key, config.application_key)
 

@@ -2,12 +2,18 @@ require 'spec_helper'
 
 describe Lita::Handlers::Datadog, lita_handler: true do
   EXAMPLE_IMAGE_URL = 'http://www.example.com/path/that/ends/in.png'.freeze
-  EXAMPLE_ERROR_MSG = 'Error requesting Datadog graph'.freeze
+  EXAMPLE_ERROR_MSG = 'Error making DataDog request'.freeze
 
   let(:success) do
     client = double
     allow(client).to receive(:graph_snapshot) {
       [200, { 'snapshot_url' => EXAMPLE_IMAGE_URL }]
+    }
+    allow(client).to receive(:mute_host) {
+      [200, { 'hostname' => 'host01' }]
+    }
+    allow(client).to receive(:unmute_host) {
+      [200, { 'hostname' => 'host01' }]
     }
     client
   end
@@ -15,6 +21,8 @@ describe Lita::Handlers::Datadog, lita_handler: true do
   let(:error) do
     client = double
     allow(client).to receive(:graph_snapshot) { [500, { 'errors' => ['foo'] }] }
+    allow(client).to receive(:mute_host) { [500, { 'errors' => ['foo'] }] }
+    allow(client).to receive(:unmute_host) { [500, { 'errors' => ['foo'] }] }
     client
   end
 
@@ -31,24 +39,10 @@ describe Lita::Handlers::Datadog, lita_handler: true do
     is_expected.to route_command(
       'graph metric:"system.load.1{*}" event:"sources:something"')
       .to(:graph)
-  end
 
-  describe '.default_config' do
-    it 'sets the api_key to nil' do
-      expect(Lita.config.handlers.datadog.api_key).to be_nil
-    end
-
-    it 'sets the application_key to nil' do
-      expect(Lita.config.handlers.datadog.application_key).to be_nil
-    end
-
-    it 'sets the timerange to 3600' do
-      expect(Lita.config.handlers.datadog.timerange).to eq(3600)
-    end
-
-    it 'sets the waittime to 0' do
-      expect(Lita.config.handlers.datadog.waittime).to eq(0)
-    end
+    is_expected.to route_command('dd mute host01').to(:mute)
+    is_expected.to route_command('dd mute host01 message:"Foo Bar"').to(:mute)
+    is_expected.to route_command('dd unmute host01')
   end
 
   describe '#graph' do
@@ -79,6 +73,40 @@ describe Lita::Handlers::Datadog, lita_handler: true do
     it 'with an invalid event returns an error' do
       expect(Dogapi::Client).to receive(:new) { error }
       send_command('graph metric:"system.load.1{*}" event:"omg:wtf"')
+      expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
+    end
+  end
+
+  describe '#mute' do
+    it 'mutes a hostname' do
+      expect(Dogapi::Client).to receive(:new) { success }
+      send_command('dd mute host01')
+      expect(replies.last).to eq('Host host01 muted')
+    end
+
+    it 'mutes a hostname with a message' do
+      expect(Dogapi::Client).to receive(:new) { success }
+      send_command('dd mute host01 message:"Foo Bar"')
+      expect(replies.last).to eq('Host host01 muted')
+    end
+
+    it 'reports an error if there was a problem with the request' do
+      expect(Dogapi::Client).to receive(:new) { error }
+      send_command('dd mute host01')
+      expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
+    end
+  end
+
+  describe '#unmute' do
+    it 'unmutes a hostname' do
+      expect(Dogapi::Client).to receive(:new) { success }
+      send_command('dd unmute host01')
+      expect(replies.last).to eq('Host host01 unmuted')
+    end
+
+    it 'reports an error if there was a problem with the request' do
+      expect(Dogapi::Client).to receive(:new) { error }
+      send_command('dd unmute host01')
       expect(replies.last).to eq(EXAMPLE_ERROR_MSG)
     end
   end
