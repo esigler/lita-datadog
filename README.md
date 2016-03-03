@@ -81,6 +81,20 @@ to:"<time description>"
 
 Time descriptions are parsed by https://github.com/mojombo/chronic
 
+### Muting
+
+Muting a host:
+
+```
+Lita dd mute <hostname> [message:"Some reason"]
+```
+
+Unmuting a host:
+
+```
+Lita dd unmute <hostname>
+```
+
 ## License
 
 [MIT](http://opensource.org/licenses/MIT)

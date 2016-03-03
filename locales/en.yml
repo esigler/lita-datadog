@@ -3,8 +3,18 @@ en:
     handlers:
       datadog:
         errors:
-          request: Error requesting Datadog graph
+          request: Error making DataDog request
         help:
           graph:
             syntax: 'graph metric:"simple.metric.1{*},simple.metric.5{*}'
             desc: 'Graph those metrics, for the default time range'
+          mute:
+            syntax: 'dd mute <hostname> [message:"Some reason"]'
+            desc: 'Mute a host in DataDog, optionally with a message'
+          unmute:
+            syntax: 'dd unmute <hostname>'
+            desc: 'Unmute a host in DataDog'
+        mute:
+          success: "Host %{host} muted"
+        unmute:
+          success: "Host %{host} unmuted"
