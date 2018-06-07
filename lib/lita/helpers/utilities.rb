@@ -55,22 +55,22 @@ module Lita
       end
 
       def parse_end(string)
-        found = /(to|end):"(.+?)"/.match(string)
+        found = /(to|end):["“](.+?)["”]/.match(string)
         found ? Chronic.parse(found[2]).to_i : Time.now.to_i
       end
 
       def parse_start(string, end_ts)
-        found = /(from|start):"(.+?)"/.match(string)
+        found = /(from|start):["“](.+?)["”]/.match(string)
         found ? Chronic.parse(found[2]).to_i : end_ts - config.timerange
       end
 
       def parse_metric(string)
-        found = /metric:"(.+?)"/.match(string)
+        found = /metric:["“](.+?)["”]/.match(string)
         found ? found[1] : 'system.load.1{*}'
       end
 
       def parse_event(string)
-        found = /event:"(.+?)"/.match(string)
+        found = /event:["“](.+?)["”]/.match(string)
         found ? found[1] : ''
       end
     end
